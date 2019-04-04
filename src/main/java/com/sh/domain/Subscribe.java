@@ -1,5 +1,6 @@
 package com.sh.domain;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -23,6 +24,10 @@ public class Subscribe {
 	private Date subDate;
 	@ColumnDefault("false")
 	private boolean isOvertime;//是否过期
+	private String insurance;//保险
+	private BigDecimal amount;//金额
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+	private Date returnDate;//归还日期
 	public long getId() {
 		return id;
 	}
@@ -52,5 +57,23 @@ public class Subscribe {
 	}
 	public void setOvertime(boolean isOvertime) {
 		this.isOvertime = isOvertime;
+	}
+	public String getInsurance() {
+		return insurance;
+	}
+	public void setInsurance(String insurance) {
+		this.insurance = insurance;
+	}
+	public BigDecimal getAmount() {
+		return amount;
+	}
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
+	}
+	public Date getReturnDate() {
+		return returnDate;
+	}
+	public void setReturnDate(Date returnDate) {
+		this.returnDate = returnDate;
 	}
 }

@@ -16,12 +16,14 @@ public class OrderDTO {
 	private String brand;//品牌
 	private String img;
 	private BigDecimal amount;//订单金额
+	private String insurance;//保险
+	private Date returnDate;//归还日期
 	private int status;//订单状态 0：未完成  1：已完成
 	private Date createTime;
 	private Date endTime;
 	
 	public OrderDTO(long id, long userId, long carId, String name, String brand, String img, BigDecimal amount,
-			int status, Date createTime, Date endTime) {
+			int status, Date createTime, Date endTime,String insurance,Date returnDate) {
 		super();
 		this.id = id;
 		this.userId = userId;
@@ -33,6 +35,8 @@ public class OrderDTO {
 		this.status = status;
 		this.createTime = createTime;
 		this.endTime = endTime;
+		this.insurance = insurance;
+		this.returnDate = returnDate;
 	}
 	public String getName() {
 		return name;
@@ -93,5 +97,17 @@ public class OrderDTO {
 	}
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
+	}
+	public String getInsurance() {
+		return insurance;
+	}
+	public void setInsurance(String insurance) {
+		this.insurance = insurance;
+	}
+	public Date getReturnDate() {
+		return returnDate;
+	}
+	public void setReturnDate(Date returnDate) {
+		this.returnDate = returnDate;
 	}
 }

@@ -17,12 +17,15 @@ public class OrderInfo {
 	private long id;//订单id
 	private long carId;
 	private long userId;
-	private BigDecimal amount;//订单金额
+	private String insurance;//保险
+	private BigDecimal amount;//金额
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+	private Date returnDate;//归还日期
 	private int status;//订单状态 0：未完成  1：已完成
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	private Date createTime;
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
-	private Date endTime;
+	private Date endTime;//实际结束时间
 	
 	public long getId() {
 		return id;
@@ -65,5 +68,17 @@ public class OrderInfo {
 	}
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
+	}
+	public String getInsurance() {
+		return insurance;
+	}
+	public void setInsurance(String insurance) {
+		this.insurance = insurance;
+	}
+	public Date getReturnDate() {
+		return returnDate;
+	}
+	public void setReturnDate(Date returnDate) {
+		this.returnDate = returnDate;
 	}
 }

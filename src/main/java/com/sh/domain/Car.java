@@ -24,6 +24,7 @@ public class Car {
 	@Lob
     @Column(columnDefinition="text")
 	private String img;//汽车图片
+	private String recommendedType;//推荐类型：新手上路，老司机，车神来了
 	private int recommendedAmount;//推荐量
 	private int salesVolume;//销量
 	private String factory;//厂商
@@ -132,5 +133,11 @@ public class Car {
 	}
 	public void setSub(boolean isSub) {
 		this.isSub = isSub;
+	}
+	public String getRecommendedType() {
+		return recommendedType;
+	}
+	public void setRecommendedType(String recommendedType) {
+		this.recommendedType = recommendedType;
 	}
 }

@@ -10,6 +10,8 @@ public class SubscribeCar {
 	private String name;//名字
 	private String brand;//品牌
 	private BigDecimal price;//价格
+	private String insurance;//保险
+	private Date returnDate;//归还日期
 	private String img;
 	private long userId;
 	private Date subDate;
@@ -68,5 +70,16 @@ public class SubscribeCar {
 	public void setOvertime(boolean isOvertime) {
 		this.isOvertime = isOvertime;
 	}
-	
+	public String getInsurance() {
+		return insurance;
+	}
+	public void setInsurance(String insurance) {
+		this.insurance = insurance;
+	}
+	public Date getReturnDate() {
+		return returnDate;
+	}
+	public void setReturnDate(Date returnDate) {
+		this.returnDate = returnDate;
+	}
 }

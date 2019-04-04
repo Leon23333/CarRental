@@ -26,9 +26,11 @@ import com.sh.domain.Car;
 import com.sh.domain.Cart;
 import com.sh.domain.Collection;
 import com.sh.domain.Comment;
+import com.sh.domain.Endorsement;
 import com.sh.domain.OrderInfo;
 import com.sh.domain.Subscribe;
 import com.sh.dto.CarDTO;
+import com.sh.dto.CartDataDTO;
 import com.sh.dto.CommonDataDto;
 import com.sh.dto.OrderDTO;
 import com.sh.dto.Result;
@@ -37,6 +39,7 @@ import com.sh.repos.CarRepos;
 import com.sh.repos.CartRepos;
 import com.sh.repos.CollectionRepos;
 import com.sh.repos.CommentRepos;
+import com.sh.repos.EndorsementRepos;
 import com.sh.repos.OrderRepos;
 import com.sh.repos.SubscribeRepos;
 
@@ -55,11 +58,14 @@ public class CarController {
 	private OrderRepos orderRepos;
 	@Autowired
 	private SubscribeRepos subscribeRepos;
+	@Autowired
+	private EndorsementRepos endorsementRepos;
 
 	// 添加汽车
 	@RequestMapping("/add")
 	public Result add(@RequestParam String name, String brand, BigDecimal price, String img, String factory,
-			String factoryBg, String advantage, String defect, String consumption) {
+			String factoryBg, String advantage, String defect, String consumption,
+			@RequestParam String recommendedType) {
 		Car car = new Car();
 		car.setName(name);
 		car.setBrand(brand);
@@ -73,6 +79,7 @@ public class CarController {
 		car.setDefect(defect);
 		car.setMileage(new Random().nextInt(3000));
 		car.setConsumption(consumption);
+		car.setRecommendedType(recommendedType);
 		carRepos.save(car);
 		return Result.ok("添加成功");
 	}
@@ -94,8 +101,9 @@ public class CarController {
 
 	// 查推荐排行
 	@RequestMapping("/findTopRecommended")
-	public Result findTopRecommended() {
-		List<Car> cars = carRepos.findAll(new Sort(Sort.Direction.DESC, "recommendedAmount"));
+	public Result findTopRecommended(String recommendedType) {
+		List<Car> cars = carRepos.findByRecommendedType(recommendedType,
+				new Sort(Sort.Direction.DESC, "recommendedAmount"));
 		Result result = Result.ok("获取成功");
 		result.put("data", cars);
 		return result;
@@ -176,10 +184,14 @@ public class CarController {
 
 	// 加入购物车
 	@RequestMapping("/cart/add")
-	public Result addToCart(@RequestParam long carId, @RequestParam long userId) {
+	public Result addToCart(@RequestParam long carId, @RequestParam long userId, @RequestParam String insurance,
+			@RequestParam String amount, @RequestParam String returnDate) throws ParseException {
 		Cart cart = new Cart();
 		cart.setCarId(carId);
 		cart.setUserId(userId);
+		cart.setInsurance(insurance);
+		cart.setAmount(new BigDecimal(amount));
+		cart.setReturnDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(returnDate));
 		cartRepos.save(cart);
 		Result result = Result.ok("加入购物车成功");
 		return result;
@@ -196,7 +208,7 @@ public class CarController {
 	// 查看已加入购物车中的汽车
 	@RequestMapping("/cart/getAll")
 	public Result getCart(@RequestParam long userId) {
-		List<CommonDataDto> data = cartRepos.getCart(userId);
+		List<CartDataDTO> data = cartRepos.getCart(userId);
 		Result result = Result.ok("获取成功");
 		result.put("data", data);
 		return result;
@@ -205,7 +217,8 @@ public class CarController {
 	// 提交订单
 	@RequestMapping("/order/add")
 	@Transactional
-	public Result createOrder(@RequestParam long carId, @RequestParam long userId, @RequestParam String price) {
+	public Result createOrder(@RequestParam long carId, @RequestParam long userId, @RequestParam String price,
+			@RequestParam String insurance, @RequestParam String returnDate) {
 		try {
 			Car car = carRepos.getOne(carId);
 			if (car.isRent()) {
@@ -224,6 +237,8 @@ public class CarController {
 			order.setCarId(carId);
 			order.setUserId(userId);
 			order.setAmount(new BigDecimal(price));
+			order.setInsurance(insurance);
+			order.setReturnDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(returnDate));
 			order.setStatus(0);
 			order.setCreateTime(new Date());
 			orderRepos.save(order);
@@ -300,7 +315,8 @@ public class CarController {
 	// 预约汽车
 	@RequestMapping("/sub/add")
 	@Transactional
-	public Result sub(@RequestParam long carId, @RequestParam long userId, @RequestParam String subDate) {
+	public Result sub(@RequestParam long carId, @RequestParam long userId, @RequestParam String subDate,
+			@RequestParam String insurance, @RequestParam String amount, @RequestParam String returnDate) {
 		try {
 
 			Car car = carRepos.getOne(carId);
@@ -317,6 +333,9 @@ public class CarController {
 			subscribe.setCarId(carId);
 			subscribe.setUserId(userId);
 			subscribe.setSubDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(subDate));
+			subscribe.setInsurance(insurance);
+			subscribe.setAmount(new BigDecimal(amount));
+			subscribe.setReturnDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(returnDate));
 			subscribeRepos.save(subscribe);
 			Result result = Result.ok("预约成功");
 			return result;
@@ -356,11 +375,13 @@ public class CarController {
 			subscribeCar.setUserId(userId);
 			subscribeCar.setSubDate(subscribe.getSubDate());
 			subscribeCar.setOvertime(subscribe.isOvertime());
+			subscribeCar.setInsurance(subscribe.getInsurance());
+			subscribeCar.setReturnDate(subscribe.getReturnDate());
 			Car car = carRepos.getOne(subscribe.getCarId());
 			subscribeCar.setCarId(car.getId());
 			subscribeCar.setName(car.getName());
 			subscribeCar.setBrand(car.getBrand());
-			subscribeCar.setPrice(car.getPrice());
+			subscribeCar.setPrice(subscribe.getAmount());
 			subscribeCar.setImg(car.getImg());
 
 			subscribeCars.add(subscribeCar);
@@ -395,5 +416,27 @@ public class CarController {
 			e.printStackTrace();
 		}
 		return Result.error("提交失败");
+	}
+
+	// 添加违章记录
+	@RequestMapping("/endorsement/add")
+	public Result addEndorsement(long carId, long userId, String name, String brand, String info, String date)
+			throws ParseException {
+		Endorsement endorsement = new Endorsement();
+		endorsement.setCarId(carId);
+		endorsement.setUserId(userId);
+		endorsement.setName(name);
+		endorsement.setBrand(brand);
+		endorsement.setInfo(info);
+		endorsement.setDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date));
+		endorsementRepos.save(endorsement);
+		return Result.ok("保存成功");
+	}
+
+	// 通过用户id查询违章记录
+	@RequestMapping("/endorsement/getByUserId")
+	public Result getEndorsementByUserId(long userId) {
+		List<Endorsement> endorsements = endorsementRepos.findByUserId(userId);
+		return Result.ok("获取成功").put("data", endorsements);
 	}
 }

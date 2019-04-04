@@ -2,7 +2,7 @@ package com.sh.dto;
 
 import java.math.BigDecimal;
 
-//查询购物车和收藏 通用数据格式
+//收藏 数据格式
 public class CommonDataDto {
 	private long id;
 	private long userId;
@@ -11,6 +11,8 @@ public class CommonDataDto {
 	private String brand;//品牌
 	private BigDecimal price;//价格
 	private String img;
+	
+	public CommonDataDto() {}
 	
 	public CommonDataDto(long id, long userId, long carId, String name, String brand, BigDecimal price, String img) {
 		super();
