@@ -120,25 +120,25 @@ public class CarController {
 
 	// 查所有及按条件查询
 	@RequestMapping("/findAll")
-	public Result findAll(String name, String brand, String factory, int fromMileage, int toMileage,
-			String fromConsumption, String toConsumption) {
+	public Result findAll(String name, String brand, String factory, Integer fromMileage, Integer toMileage,
+			Integer fromConsumption, Integer toConsumption) {
 		System.err.println("name:" + name + " brand:" + brand + " factory:" + factory + " fromMileage:" + " toMileage"
 				+ toMileage + " fromConsumption:" + fromConsumption + " toConsumption:" + toConsumption);
 		List<Car> cars = carRepos.findAll((root, criteriaQuery, criteriaBuilder) -> {
 			List<Predicate> predicates = new ArrayList<>();
-			if (name != null && !name.equals("")) {
+			if (null != name && !name.equals("")) {
 				predicates.add(criteriaBuilder.like(root.get("name"), "%" + name + "%"));
 			}
-			if (brand != null && !brand.equals("")) {
+			if (null != brand && !brand.equals("")) {
 				predicates.add(criteriaBuilder.like(root.get("brand"), "%" + brand + "%"));
 			}
-			if (factory != null && !factory.equals("")) {
+			if (null != factory && !factory.equals("")) {
 				predicates.add(criteriaBuilder.like(root.get("factory"), "%" + factory + "%"));
 			}
-			if (fromMileage != 0) {
+			if (null != fromMileage && fromMileage != 0) {
 				predicates.add(criteriaBuilder.between(root.get("mileage"), fromMileage, toMileage));
 			}
-			if (fromConsumption != null && !fromConsumption.equals("")) {
+			if (null != fromConsumption) {
 				predicates.add(criteriaBuilder.between(root.get("consumption"), fromConsumption, toConsumption));
 			}
 			return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
