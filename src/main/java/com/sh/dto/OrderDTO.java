@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class OrderDTO {
 	private long id;//订单id
 	private long userId;
@@ -17,9 +19,12 @@ public class OrderDTO {
 	private String img;
 	private BigDecimal amount;//订单金额
 	private String insurance;//保险
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	private Date returnDate;//归还日期
 	private int status;//订单状态 0：未完成  1：已完成
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	private Date createTime;
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	private Date endTime;
 	
 	public OrderDTO(long id, long userId, long carId, String name, String brand, String img, BigDecimal amount,

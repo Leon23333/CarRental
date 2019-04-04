@@ -3,6 +3,8 @@ package com.sh.dto;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 
 public class SubscribeCar {
 	private long subscribeId;
@@ -11,9 +13,11 @@ public class SubscribeCar {
 	private String brand;//品牌
 	private BigDecimal price;//价格
 	private String insurance;//保险
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	private Date returnDate;//归还日期
 	private String img;
 	private long userId;
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	private Date subDate;
 	private boolean isOvertime;//是否过期
 	public long getSubscribeId() {

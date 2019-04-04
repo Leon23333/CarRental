@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 //评价表
 @Entity
 public class Comment {
@@ -21,6 +23,7 @@ public class Comment {
 	@Lob
 	@Column(columnDefinition = "text")
 	private String content;
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	private Date createTime;
 
 	public long getId() {

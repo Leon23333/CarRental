@@ -3,9 +3,12 @@ package com.sh.dto;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 //购物车数据格式
 public class CartDataDTO extends CommonDataDto {
 	private String insurance;//保险
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	private Date returnDate;//归还日期
 	
 	public String getInsurance() {
