@@ -99,6 +99,37 @@ public class CarController {
 		return result;
 	}
 
+	// 根据id删除汽车
+	@RequestMapping("/delete")
+	public Result delete(@RequestParam long id) {
+		if (collectionRepos.findByCarId(id).size()>0) {
+			return Result.error("删除失败，该汽车已有收藏关联");
+		}
+		if (cartRepos.findByCarId(id).size()>0) {
+			return Result.error("删除失败，该汽车已有购物车关联");
+		}
+		if (commentRepos.findByCarId(id,null).size()>0) {
+			return Result.error("删除失败，该汽车已有评论关联");
+		}
+		if (endorsementRepos.findByCarId(id).size()>0) {
+			return Result.error("删除失败，该汽车已有违章关联");
+		}
+		if (orderRepos.findByCarId(id).size()>0) {
+			return Result.error("删除失败，该汽车已有订单关联");
+		}
+		if (subscribeRepos.findByCarId(id).size()>0) {
+			return Result.error("删除失败，该汽车已有预约关联");
+		}
+		try {
+			carRepos.deleteById(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Result.ok("不存在的id");
+		}
+		
+		return Result.ok("删除成功");
+	}
+
 	// 查推荐排行
 	@RequestMapping("/findTopRecommended")
 	public Result findTopRecommended(String recommendedType) {

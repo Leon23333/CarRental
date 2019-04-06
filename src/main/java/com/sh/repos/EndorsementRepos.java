@@ -7,9 +7,12 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import com.sh.domain.Car;
+import com.sh.domain.Cart;
 import com.sh.domain.Endorsement;
 
 @Repository
 public interface EndorsementRepos extends JpaRepository<Endorsement, Long>,JpaSpecificationExecutor<Car>  {
 	List<Endorsement> findByUserId(long userId);
+	
+	List<Endorsement> findByCarId(long carId);
 }

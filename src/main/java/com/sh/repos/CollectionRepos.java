@@ -15,4 +15,6 @@ public interface CollectionRepos extends JpaRepository<Collection, Long> {
 	List<CommonDataDto> findCollection(long userId);
 	
 	Collection findByCarIdAndUserId(long carId,long userId);
+	
+	List<Collection> findByCarId(long carId);
 }
